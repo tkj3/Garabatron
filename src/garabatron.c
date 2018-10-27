@@ -1,7 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-
-
 #define STACK_MAX 256
 
 // INITIAL_GC_THRESHOLD (a higher number = less time garbage collecting | a smaller number = more conservative with memory)
@@ -30,14 +28,6 @@ typedef struct sObject {
 		};
 	};
 } Object;
-
-
-
-/*
- *      \    / |\    /|
- *       \  /  | \  / |      (virtual machine and stack allocations)
- *		  \/   |  \/  |
- */
 
 // VM stack
 typedef struct {
@@ -106,13 +96,6 @@ Object* vmPushPair(VM* vm) {
 	return obj;
 }
 
-
-/*		       __    _                   ___
- *    |\  /|  |  |  | |  | /  |  |\  |  |
- *    | \/ |  |__|  |_/  |/   |  | \ |  |  _       (stack marking, using the John McCarthy algorithm)
- *    |	   |  |  |  | \  | \  |  |  \|  |___|
- */
-
 void objMark(Object* obj) {
 	if (obj->marked) return;
 
@@ -129,12 +112,6 @@ void vmMarkAll(VM* vm) {
 		objMark(vm->stack[i]);
 	}
 }
-
-
-/*	 ___         _   _   _            __
- *  |__  \    / |_  |_  |_|  |  |\ | | _      (mark sweeping)
- *  ___|  \/\/  |_  |_  |    |  | \| |__|
- */  
 
 void vmSweep(VM* vm) {
 	Object** obj = &vm->firstObj;
@@ -153,12 +130,6 @@ void vmSweep(VM* vm) {
 		}
 	}
 }
-
-/*
- *     |\  /|  __
- *     | \/ | |__| | |\ |
- *     |    | |  | | | \|
- */
 
 void gcStart(VM* vm) {
 	int numObjects = vm->numObjects;
